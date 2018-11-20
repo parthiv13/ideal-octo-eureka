@@ -3,7 +3,49 @@ const fs = require('fs'),
     path = require('path'),
     csv = require('fast-csv');
 
-let scrape = async (email) => {
+var arr = [];
+
+csv
+    .fromPath('leads.csv').on("data", function (data) {
+        arr.push(data)
+    })
+    .on("end", function () {
+        console.log(arr);
+        (async () => {
+            try {
+                const browser = await puppeteer.launch({ headless: false });
+                const page = await browser.newPage();
+
+                for (let email of arr) {
+                    await page.goto('http://mailtester.com/');
+                    console.log('starting')
+                    await page.waitFor(1000);
+                    if (typeof email[0] != 'undefined') {
+                        await page.type('input[name=email]', email[0], { delay: 20 });
+                        await page.click('input[type=submit]');
+                        console.log(email[0]);
+                        await page.waitFor(1000);
+                        await page.waitForSelector('table');
+
+                        let title = await page.$eval('div#content > table tr:nth-child(5)', item => item.textContent);
+                        console.log(title)
+                    }
+                    else {
+                        console.log('email tho de!')
+                    }
+                }
+
+                browser.close();
+            }
+            catch (e) {
+                console.log(e);
+            }
+        })();
+    });
+
+
+
+/*let scrape = async (email) => {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
@@ -24,17 +66,21 @@ let scrape = async (email) => {
     return result;
 };
 
-/*scrape().then((value) => {
+scrape().then((value) => {
     console.log(value);
-})*/
+})
 
-csv
+/*csv
     .fromPath('leads.csv').on("data", function (data) {
         if (data != "")
-            scrape(data).then((value) => {
-                console.log(value)
-            })
+            scrape(data)
+                .then((value) => {
+                    console.log(value)
+                })
+                .catch((error) => {
+                    //console.log(error)
+                })
     })
     .on("end", function () {
         console.log('done')
-    })
+    })*/
