@@ -20,7 +20,7 @@ csv
                     await page.goto('http://mailtester.com/');
                     //console.log('starting');
                     if (typeof email[0] != 'undefined') {
-                        await page.type('input[name=email]', email[0], { delay: 20 });
+                        await page.type('input[name=email]', email[0], { delay: 1 });
                         await page.click('input[type=submit]');
                         console.log(email[0]);
                         await page.waitForSelector('table');
@@ -29,6 +29,9 @@ csv
                         if (title == 5) {
                             let valid = await page.$eval('div#content > table tr:nth-child(5) td:nth-child(5)', item => item.innerHTML);
                             console.log(valid)
+                        }
+                        else {
+                            console.log("server refused to connect")
                         }
                     }
                     else {
