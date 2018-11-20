@@ -1,9 +1,14 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs'),
     path = require('path'),
+    csvWriter = require('csv-write-stream'),
+    writer = csvWriter({ sendHeaders: false }),
     csv = require('fast-csv');
 
 var arr = [];
+
+writer.pipe(fs.createWriteStream(path.join(__dirname, 'output.csv')));
+writer.write({ name: 'hi!', email: 'Lu!'});
 
 csv
     .fromPath('leads.csv').on("data", function (data) {
@@ -28,14 +33,17 @@ csv
                         let title = await page.$$eval('div#content > table tr', item => item.length);
                         if (title == 5) {
                             let valid = await page.$eval('div#content > table tr:nth-child(5) td:nth-child(5)', item => item.innerHTML);
-                            console.log(valid)
+                            console.log(valid);
+                            writer.write({ name: email[0], email: valid })
                         }
                         else {
                             console.log("server refused to connect")
+                            writer.write({ name: email[0], email: 'server refused to connect'})
                         }
                     }
                     else {
-                        console.log('email tho de!')
+                        console.log('email tho de!');
+                        writer.write({ name: email[0], email: 'email tho de!'})
                     }
                 }
 
