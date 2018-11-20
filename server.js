@@ -18,17 +18,18 @@ csv
 
                 for (let email of arr) {
                     await page.goto('http://mailtester.com/');
-                    console.log('starting')
-                    await page.waitFor(1000);
+                    //console.log('starting');
                     if (typeof email[0] != 'undefined') {
                         await page.type('input[name=email]', email[0], { delay: 20 });
                         await page.click('input[type=submit]');
                         console.log(email[0]);
-                        await page.waitFor(1000);
                         await page.waitForSelector('table');
 
-                        let title = await page.$eval('div#content > table tr:nth-child(5)', item => item.textContent);
-                        console.log(title)
+                        let title = await page.$$eval('div#content > table tr', item => item.length);
+                        if (title == 5) {
+                            let valid = await page.$eval('div#content > table tr:nth-child(5) td:nth-child(5)', item => item.innerHTML);
+                            console.log(valid)
+                        }
                     }
                     else {
                         console.log('email tho de!')
