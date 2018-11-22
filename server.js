@@ -37,8 +37,9 @@ csv
                             writer.write({ name: email[0], email: valid })
                         }
                         else {
-                            console.log("server refused to connect")
-                            writer.write({ name: email[0], email: 'server refused to connect'})
+                            let reason = await page.$eval('div#content > table tr:nth-child(4) td:nth-child(5)', item => item.innerHTML);
+                            console.log(reason);
+                            writer.write({ name: email[0], email: reason})
                         }
                     }
                     else {
