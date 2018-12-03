@@ -18,7 +18,7 @@ csv
         console.log(arr);
         (async () => {
             try {
-                const browser = await puppeteer.launch({ headless: false });
+                const browser = await puppeteer.launch({ headless: true });
                 const page = await browser.newPage();
 
                 for (let email of arr) {
@@ -39,12 +39,12 @@ csv
                         else {
                             let reason = await page.$eval('div#content > table tr:nth-child(4) td:nth-child(5)', item => item.innerHTML);
                             console.log(reason);
-                            writer.write({ name: email[0], email: reason})
+                            //writer.write({ name: email[0], email: reason})
                         }
                     }
                     else {
                         console.log('email tho de!');
-                        writer.write({ name: email[0], email: 'email tho de!'})
+                        //writer.write({ name: email[0], email: 'email tho de!'})
                     }
                 }
 
