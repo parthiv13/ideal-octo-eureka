@@ -28,7 +28,7 @@ macaddress.one(function (err, mac) {
                     console.log(arr);
                     (async () => {
                         try {
-                            const browser = await puppeteer.launch({ headless: false });
+                            const browser = await puppeteer.launch({ headless: true });
                             const page = await browser.newPage();
 
                             for (let email of arr) {
